@@ -191,18 +191,15 @@ pub fn main() {
     loop {
         run_threads(vec![
             call_instantiate_on_cached_contract,
-            call_execute_on_cached_contract,
+            // call_execute_on_cached_contract,
         ]);
     }
 }
 
 fn run_threads(functions: Vec<fn() -> ()>) {
+    // spawn many threads, even if there are few functions
     const TARGET_THREAD_COUNT: usize = 20;
-    let multiplier = if functions.len() < TARGET_THREAD_COUNT {
-        TARGET_THREAD_COUNT / functions.len()
-    } else {
-        1
-    };
+    let multiplier = (TARGET_THREAD_COUNT / functions.len()).max(1);
     let mut threads = Vec::with_capacity(functions.len() * multiplier);
 
     for _ in 0..multiplier {
